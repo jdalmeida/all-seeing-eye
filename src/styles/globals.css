@@ -1,6 +1,95 @@
 @import "tailwindcss";
 
 @theme {
-	--font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
-		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-sans: "Courier New", "Monaco", "Menlo", monospace;
+	--font-mono: "Courier New", "Monaco", "Menlo", monospace;
+
+	/* Hacker theme colors */
+	--color-black: #0a0a0a;
+	--color-gray-900: #0f0f0f;
+	--color-gray-800: #1a1a1a;
+	--color-gray-700: #2a2a2a;
+	--color-green-400: #00ff41;
+	--color-green-500: #00cc33;
+	--color-green-600: #009926;
+	--color-white: #ffffff;
+	--color-gray-300: #d1d5db;
+	--color-red-500: #ff0040;
+	--color-blue-500: #0080ff;
+
+	/* Background colors */
+	--color-background: var(--color-black);
+	--color-surface: var(--color-gray-900);
+
+	/* Text colors */
+	--color-text-primary: var(--color-green-400);
+	--color-text-secondary: var(--color-green-500);
+	--color-text-muted: var(--color-gray-300);
+
+	/* Interactive colors */
+	--color-primary: var(--color-green-500);
+	--color-primary-hover: var(--color-green-400);
+	--color-error: var(--color-red-500);
+	--color-info: var(--color-blue-500);
+}
+
+/* Base styles for hacker theme */
+@layer base {
+	html {
+		font-family: var(--font-mono);
+	}
+
+	body {
+		background-color: var(--color-background);
+		color: var(--color-text-primary);
+		font-family: var(--font-mono);
+		line-height: 1.6;
+	}
+
+	/* Terminal cursor effect for inputs */
+	input:focus,
+	textarea:focus {
+		outline: none;
+		border-color: var(--color-green-400);
+		box-shadow: 0 0 10px var(--color-green-400);
+	}
+
+	/* Neon glow effect */
+	.neon-glow {
+		text-shadow: 0 0 5px var(--color-green-400), 0 0 10px var(--color-green-400), 0 0 15px var(--color-green-400);
+	}
+
+	/* Blinking cursor animation */
+	@keyframes blink {
+		0%, 50% { opacity: 1; }
+		51%, 100% { opacity: 0; }
+	}
+
+	.cursor-blink::after {
+		content: '|';
+		animation: blink 1s infinite;
+		color: var(--color-green-400);
+	}
+}
+
+/* Custom utility classes */
+@layer utilities {
+	.text-neon {
+		text-shadow: 0 0 5px var(--color-green-400), 0 0 10px var(--color-green-400);
+	}
+
+	.bg-terminal {
+		background-color: var(--color-background);
+	}
+
+	.border-terminal {
+		border-color: var(--color-green-600);
+	}
+
+	.glow-on-hover:hover {
+		box-shadow: 0 0 20px var(--color-green-400);
+		transition: box-shadow 0.3s ease;
+	}
+
+	/* Scan lines effect removed to prevent scroll issues */
 }

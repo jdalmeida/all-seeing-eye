@@ -1,53 +1,61 @@
-import Link from "next/link";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Navbar } from "@/app/_components/navbar";
+import { HackerGlobeCanvas } from "@/app/_components/hacker-globe";
+import { HydrateClient } from "@/trpc/server";
 
-import { LatestPost } from "@/app/_components/post";
-import { HydrateClient, api } from "@/trpc/server";
-
-export default async function Home() {
-	const hello = await api.post.hello({ text: "from tRPC" });
-
-	void api.post.getLatest.prefetch();
-
+export default function Home() {
 	return (
 		<HydrateClient>
-			<main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-				<div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-					<h1 className="font-extrabold text-5xl tracking-tight sm:text-[5rem]">
-						Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-					</h1>
-					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-						<Link
-							className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-							href="https://create.t3.gg/en/usage/first-steps"
-							target="_blank"
-						>
-							<h3 className="font-bold text-2xl">First Steps →</h3>
-							<div className="text-lg">
-								Just the basics - Everything you need to know to set up your
-								database and authentication.
-							</div>
-						</Link>
-						<Link
-							className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-							href="https://create.t3.gg/en/introduction"
-							target="_blank"
-						>
-							<h3 className="font-bold text-2xl">Documentation →</h3>
-							<div className="text-lg">
-								Learn more about Create T3 App, the libraries it uses, and how
-								to deploy it.
-							</div>
-						</Link>
-					</div>
-					<div className="flex flex-col items-center gap-2">
-						<p className="text-2xl text-white">
-							{hello ? hello.greeting : "Loading tRPC query..."}
-						</p>
-					</div>
+			<div className="min-h-screen bg-terminal relative">
+				<SignedIn>
+					<Navbar />
+					<main className="relative h-screen overflow-hidden">
+						{/* Globo hacker central */}
+						<div className="absolute inset-0 z-0">
+							<HackerGlobeCanvas />
+						</div>
 
-					<LatestPost />
-				</div>
-			</main>
+						{/* Overlay sutil com informações */}
+						<div className="absolute top-20 left-4 z-10 text-text-muted text-sm">
+							<div>&gt; ALL-SEEING EYE v1.0</div>
+							<div>&gt; Sistema Operacional</div>
+							<div>&gt; Monitoramento Ativo</div>
+						</div>
+					</main>
+				</SignedIn>
+
+				<SignedOut>
+					<main className="relative h-screen overflow-hidden flex flex-col items-center justify-center px-4">
+						{/* Globo hacker como plano de fundo */}
+						<div className="absolute inset-0 z-0">
+							<HackerGlobeCanvas />
+						</div>
+
+						{/* Overlay de login minimalista */}
+						<div className="relative z-10 text-center">
+							<div className="mb-8">
+								<h1 className="text-4xl font-bold text-neon neon-glow mb-2">
+									[ALL-SEEING EYE]
+								</h1>
+								<p className="text-text-secondary text-sm">
+									Sistema de Vigilância Inteligente
+								</p>
+							</div>
+
+							<SignInButton mode="modal">
+								<button type="button" className="px-6 py-2 bg-primary text-black font-bold border border-primary hover:bg-primary-hover hover:glow-on-hover transition-all">
+									[ACESSAR]
+								</button>
+							</SignInButton>
+
+							<div className="mt-8 text-xs text-text-muted">
+								<div>&gt; Terminal v1.0 - Build 2024.01</div>
+								<div>&gt; Sistema Seguro e Operacional</div>
+							</div>
+						</div>
+					</main>
+				</SignedOut>
+			</div>
 		</HydrateClient>
 	);
 }
