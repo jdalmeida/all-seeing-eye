@@ -52,6 +52,8 @@ CLERK_AFTER_SIGN_IN_URL=/
 CLERK_AFTER_SIGN_UP_URL=/
 ```
 
+**Crie um arquivo `.env.example` na raiz do projeto com este conteúdo para documentar as variáveis necessárias.**
+
 ### 4. Configure a API Key do Google AI
 
 1. Acesse [Google AI Studio](https://makersuite.google.com/app/apikey)

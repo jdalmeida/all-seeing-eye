@@ -53,7 +53,7 @@ export const news = createTable(
 export const insights = createTable(
 	"insight",
 	(d) => ({
-		id: d.varchar({ length: 255 }).primaryKey().default(sql`gen_random_uuid()`),
+		id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
 		newsId: d.varchar({ length: 255 }).notNull(),
 		userId: d.varchar({ length: 255 }), // Optional: can be null for global insights
 		content: d.text().notNull(), // AI-generated insight content

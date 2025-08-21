@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Navbar } from '@/app/_components/navbar';
-import { HydrateClient } from '@/trpc/server';
 
 interface NewsItem {
   id: string;
@@ -55,39 +54,34 @@ export default function NewsPage() {
 
   if (loading) {
     return (
-      <HydrateClient>
-        <div className="min-h-screen bg-terminal">
-          <Navbar />
-          <main className="container mx-auto px-4 py-8">
-            <div className="text-center text-text-secondary">
-              <div>&gt; Carregando notícias...</div>
-            </div>
-          </main>
-        </div>
-      </HydrateClient>
+      <div className="min-h-screen bg-terminal">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center text-text-secondary">
+            <div>&gt; Carregando notícias...</div>
+          </div>
+        </main>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <HydrateClient>
-        <div className="min-h-screen bg-terminal">
-          <Navbar />
-          <main className="container mx-auto px-4 py-8">
-            <div className="text-center text-error">
-              <div>&gt; ERRO: {error}</div>
-            </div>
-          </main>
-        </div>
-      </HydrateClient>
+      <div className="min-h-screen bg-terminal">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center text-error">
+            <div>&gt; ERRO: {error}</div>
+          </div>
+        </main>
+      </div>
     );
   }
 
   return (
-    <HydrateClient>
-      <div className="min-h-screen bg-terminal">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-terminal">
+      <Navbar />
+      <main className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-neon neon-glow mb-2">
               [NEWS TERMINAL]
@@ -160,6 +154,5 @@ export default function NewsPage() {
           </div>
         </main>
       </div>
-    </HydrateClient>
   );
 }
