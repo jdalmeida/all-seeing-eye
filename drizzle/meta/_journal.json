@@ -1,27 +1,34 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1755808779657,
-      "tag": "0000_colossal_vengeance",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1755810792451,
-      "tag": "0001_flippant_thanos",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1755870872020,
-      "tag": "0002_mysterious_photon",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1755808779657,
+			"tag": "0000_colossal_vengeance",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1755810792451,
+			"tag": "0001_flippant_thanos",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1755870872020,
+			"tag": "0002_mysterious_photon",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1755870872020,
+			"tag": "0003_chat_system_prompts",
+			"breakpoints": true
+		}
+	]
 }

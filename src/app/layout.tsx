@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 
+import { NotificationProvider } from "@/app/_contexts/notification-context";
 import { initNewsPipeline } from "@/lib/init";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -31,7 +32,9 @@ export default function RootLayout({
 		>
 			<html lang="pt-BR">
 				<body className="h-screen overflow-y-auto bg-terminal">
-					<TRPCReactProvider>{children}</TRPCReactProvider>
+					<TRPCReactProvider>
+						<NotificationProvider>{children}</NotificationProvider>
+					</TRPCReactProvider>
 				</body>
 			</html>
 		</ClerkProvider>

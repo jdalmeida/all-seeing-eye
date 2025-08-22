@@ -66,8 +66,12 @@ export function NewsCLI({ isSidebar = false }: NewsCLIProps) {
 
 	// Alertas: hooks para criar e consultar
 	const createAlert = api.alerts.create.useMutation();
-	const alertsListQuery = api.alerts.list.useQuery(undefined, { enabled: false });
-	const alertEventsQuery = api.alerts.events.useQuery(undefined, { enabled: false });
+	const alertsListQuery = api.alerts.list.useQuery(undefined, {
+		enabled: false,
+	});
+	const alertEventsQuery = api.alerts.events.useQuery(undefined, {
+		enabled: false,
+	});
 
 	const scrollToEnd = () => {
 		terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -190,7 +194,10 @@ export function NewsCLI({ isSidebar = false }: NewsCLIProps) {
 				if (!rules || !rules.length) {
 					addMessage("info", "Nenhuma regra cadastrada.");
 				} else {
-					const lines = rules.map((r) => `#${r.id} [${r.active ? "on" : "off"}] ${r.ruleType} :: ${r.ruleText}`);
+					const lines = rules.map(
+						(r) =>
+							`#${r.id} [${r.active ? "on" : "off"}] ${r.ruleType} :: ${r.ruleText}`,
+					);
 					addMessage("output", lines.join("\n"));
 				}
 				addPrompt();
@@ -201,13 +208,19 @@ export function NewsCLI({ isSidebar = false }: NewsCLIProps) {
 				if (!events || !events.length) {
 					addMessage("info", "Sem eventos de alerta ainda.");
 				} else {
-					const lines = events.map((ev) => `#${ev.id} ${new Date(ev.createdAt as unknown as string).toLocaleString()} :: ${ev.message}`);
+					const lines = events.map(
+						(ev) =>
+							`#${ev.id} ${new Date(ev.createdAt as unknown as string).toLocaleString()} :: ${ev.message}`,
+					);
 					addMessage("output", lines.join("\n"));
 				}
 				addPrompt();
 				return;
 			}
-			addMessage("error", "Comando de alert inválido. Use: alert create|list|events");
+			addMessage(
+				"error",
+				"Comando de alert inválido. Use: alert create|list|events",
+			);
 			addPrompt();
 			return;
 		}

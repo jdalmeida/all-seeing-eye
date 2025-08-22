@@ -1,0 +1,578 @@
+{
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"all-seeing-eye_alert_event": {
+			"name": "all-seeing-eye_alert_event",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"ruleId": {
+					"name": "ruleId",
+					"type": "integer",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"newsId": {
+					"name": "newsId",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"context": {
+					"name": "context",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"message": {
+					"name": "message",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				}
+			},
+			"indexes": {
+				"alert_event_rule_id_idx": {
+					"name": "alert_event_rule_id_idx",
+					"columns": ["ruleId"]
+				},
+				"alert_event_news_id_idx": {
+					"name": "alert_event_news_id_idx",
+					"columns": ["newsId"]
+				}
+			},
+			"foreignKeys": {
+				"alert_event_rule_id_fk": {
+					"name": "alert_event_rule_id_fk",
+					"tableName": "all-seeing-eye_alert_rule",
+					"columns": ["ruleId"],
+					"foreignColumns": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"alert_event_news_id_fk": {
+					"name": "alert_event_news_id_fk",
+					"tableName": "all-seeing-eye_news",
+					"columns": ["newsId"],
+					"foreignColumns": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			}
+		},
+		"all-seeing-eye_alert_rule": {
+			"name": "all-seeing-eye_alert_rule",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"userId": {
+					"name": "userId",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"ruleText": {
+					"name": "ruleText",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"ruleType": {
+					"name": "ruleType",
+					"type": "varchar(32)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"params": {
+					"name": "params",
+					"type": "json",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"active": {
+					"name": "active",
+					"type": "boolean",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"alert_rule_user_id_idx": {
+					"name": "alert_rule_user_id_idx",
+					"columns": ["userId"]
+				},
+				"alert_rule_type_idx": {
+					"name": "alert_rule_type_idx",
+					"columns": ["ruleType"]
+				},
+				"alert_rule_active_idx": {
+					"name": "alert_rule_active_idx",
+					"columns": ["active"]
+				}
+			},
+			"foreignKeys": {
+				"alert_rule_user_id_fk": {
+					"name": "alert_rule_user_id_fk",
+					"tableName": "all-seeing-eye_user",
+					"columns": ["userId"],
+					"foreignColumns": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			}
+		},
+		"all-seeing-eye_chat_conversation": {
+			"name": "all-seeing-eye_chat_conversation",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"userId": {
+					"name": "userId",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"title": {
+					"name": "title",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"systemPrompt": {
+					"name": "systemPrompt",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"chat_conversation_user_id_idx": {
+					"name": "chat_conversation_user_id_idx",
+					"columns": ["userId"]
+				},
+				"chat_conversation_created_at_idx": {
+					"name": "chat_conversation_created_at_idx",
+					"columns": ["createdAt"]
+				}
+			},
+			"foreignKeys": {
+				"chat_conversation_user_id_fk": {
+					"name": "chat_conversation_user_id_fk",
+					"tableName": "all-seeing-eye_user",
+					"columns": ["userId"],
+					"foreignColumns": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			}
+		},
+		"all-seeing-eye_chat_message": {
+			"name": "all-seeing-eye_chat_message",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"conversationId": {
+					"name": "conversationId",
+					"type": "integer",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"role": {
+					"name": "role",
+					"type": "varchar(20)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"content": {
+					"name": "content",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				}
+			},
+			"indexes": {
+				"chat_message_conversation_id_idx": {
+					"name": "chat_message_conversation_id_idx",
+					"columns": ["conversationId"]
+				},
+				"chat_message_created_at_idx": {
+					"name": "chat_message_created_at_idx",
+					"columns": ["createdAt"]
+				}
+			},
+			"foreignKeys": {
+				"chat_message_conversation_id_fk": {
+					"name": "chat_message_conversation_id_fk",
+					"tableName": "all-seeing-eye_chat_conversation",
+					"columns": ["conversationId"],
+					"foreignColumns": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			}
+		},
+		"all-seeing-eye_insight": {
+			"name": "all-seeing-eye_insight",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"newsId": {
+					"name": "newsId",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"userId": {
+					"name": "userId",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"content": {
+					"name": "content",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"insight_news_id_idx": {
+					"name": "insight_news_id_idx",
+					"columns": ["newsId"]
+				},
+				"insight_user_id_idx": {
+					"name": "insight_user_id_idx",
+					"columns": ["userId"]
+				},
+				"insight_created_at_idx": {
+					"name": "insight_created_at_idx",
+					"columns": ["createdAt"]
+				}
+			},
+			"foreignKeys": {
+				"insight_news_id_fk": {
+					"name": "insight_news_id_fk",
+					"tableName": "all-seeing-eye_news",
+					"columns": ["newsId"],
+					"foreignColumns": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"insight_user_id_fk": {
+					"name": "insight_user_id_fk",
+					"tableName": "all-seeing-eye_user",
+					"columns": ["userId"],
+					"foreignColumns": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			}
+		},
+		"all-seeing-eye_news": {
+			"name": "all-seeing-eye_news",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "varchar(255)",
+					"primaryKey": true,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"title": {
+					"name": "title",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"link": {
+					"name": "link",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"source": {
+					"name": "source",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"publishedAt": {
+					"name": "publishedAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				}
+			},
+			"indexes": {
+				"news_published_at_idx": {
+					"name": "news_published_at_idx",
+					"columns": ["publishedAt"]
+				},
+				"news_source_idx": {
+					"name": "news_source_idx",
+					"columns": ["source"]
+				}
+			}
+		},
+		"all-seeing-eye_system_prompt_template": {
+			"name": "all-seeing-eye_system_prompt_template",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "serial",
+					"primaryKey": true,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"userId": {
+					"name": "userId",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"description": {
+					"name": "description",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"prompt": {
+					"name": "prompt",
+					"type": "text",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"isDefault": {
+					"name": "isDefault",
+					"type": "boolean",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"system_prompt_template_user_id_idx": {
+					"name": "system_prompt_template_user_id_idx",
+					"columns": ["userId"]
+				},
+				"system_prompt_template_is_default_idx": {
+					"name": "system_prompt_template_is_default_idx",
+					"columns": ["isDefault"]
+				}
+			},
+			"foreignKeys": {
+				"system_prompt_template_user_id_fk": {
+					"name": "system_prompt_template_user_id_fk",
+					"tableName": "all-seeing-eye_user",
+					"columns": ["userId"],
+					"foreignColumns": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			}
+		},
+		"all-seeing-eye_user": {
+			"name": "all-seeing-eye_user",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "varchar(255)",
+					"primaryKey": true,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"email": {
+					"name": "email",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": true
+				},
+				"firstName": {
+					"name": "firstName",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"lastName": {
+					"name": "lastName",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"profileImageUrl": {
+					"name": "profileImageUrl",
+					"type": "varchar(512)",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": true,
+					"notNull": true
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"hasDefault": false,
+					"notNull": false
+				}
+			},
+			"indexes": {
+				"email_idx": {
+					"name": "email_idx",
+					"columns": ["email"]
+				}
+			}
+		}
+	}
+}

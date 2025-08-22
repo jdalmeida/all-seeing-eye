@@ -133,4 +133,33 @@
 	}
 
 	/* Scan lines effect removed to prevent scroll issues */
+
+	/* Line clamp utility for text truncation */
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	/* Backdrop blur support */
+	.backdrop-blur-sm {
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+	}
+
+	/* Pulse animation for live indicator */
+	@keyframes pulse {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.5;
+		}
+	}
+
+	.animate-pulse {
+		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
 }

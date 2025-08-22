@@ -1,17 +1,17 @@
 "use client";
 
-import { Coins, Maximize2, Minimize2, Terminal, X } from "lucide-react";
+import { Coins, Maximize2, MessageSquare, Minimize2, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { AIChat } from "./ai-chat";
 import { CryptoCharts } from "./crypto-charts";
-import { NewsCLI } from "./news-cli";
 
-export type SidebarMode = "terminal" | "crypto" | "none";
+export type SidebarMode = "chat" | "crypto" | "none";
 
 interface RightSidebarProps {
 	defaultMode?: SidebarMode;
 }
 
-export function RightSidebar({ defaultMode = "terminal" }: RightSidebarProps) {
+export function RightSidebar({ defaultMode = "none" }: RightSidebarProps) {
 	const [activeMode, setActiveMode] = useState<SidebarMode>(defaultMode);
 	const [isExpanded, setIsExpanded] = useState(true);
 
@@ -22,7 +22,7 @@ export function RightSidebar({ defaultMode = "terminal" }: RightSidebarProps) {
 				switch (event.key.toLowerCase()) {
 					case "t":
 						event.preventDefault();
-						handleModeChange("terminal");
+						handleModeChange("chat");
 						break;
 					case "c":
 						event.preventDefault();
@@ -65,28 +65,26 @@ export function RightSidebar({ defaultMode = "terminal" }: RightSidebarProps) {
 				className={`flex flex-col border-primary border-l bg-terminal transition-all duration-300 ${
 					isCollapsed
 						? "w-0 opacity-0"
-						: activeMode === "terminal"
+						: activeMode === "chat"
 							? "w-[90dvw] opacity-100"
 							: "w-96 opacity-100"
 				}`}
 			>
-				{activeMode === "terminal" && (
+				{activeMode === "chat" && (
 					<div className="flex flex-1 flex-col">
 						<div className="flex items-center justify-between border-primary border-b p-3">
-							<h2 className="font-bold text-neon text-sm">&gt; TERMINAL</h2>
+							<h2 className="font-bold text-neon text-sm">&gt; AI CHAT</h2>
 							<button
 								type="button"
 								onClick={toggleExpanded}
 								className="text-text-muted transition-colors hover:text-neon"
-								aria-label={
-									isExpanded ? "Minimizar terminal" : "Expandir terminal"
-								}
+								aria-label={isExpanded ? "Minimizar chat" : "Expandir chat"}
 							>
 								{isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
 							</button>
 						</div>
 						<div className="flex-1">
-							<NewsCLI isSidebar={true} />
+							<AIChat isSidebar={true} />
 						</div>
 					</div>
 				)}
@@ -121,16 +119,16 @@ export function RightSidebar({ defaultMode = "terminal" }: RightSidebarProps) {
 			<div className="flex flex-col gap-2 border-primary border-l bg-terminal p-2">
 				<button
 					type="button"
-					onClick={() => handleModeChange("terminal")}
+					onClick={() => handleModeChange("chat")}
 					className={`rounded p-2 transition-all ${
-						activeMode === "terminal"
+						activeMode === "chat"
 							? "bg-primary text-black"
 							: "text-text-muted hover:bg-primary hover:bg-opacity-20 hover:text-neon"
 					}`}
-					aria-label="Terminal"
-					title="Terminal (Alt+T)"
+					aria-label="AI Chat"
+					title="AI Chat (Alt+T)"
 				>
-					<Terminal size={20} />
+					<MessageSquare size={20} />
 				</button>
 
 				<button
@@ -178,9 +176,7 @@ export function RightSidebar({ defaultMode = "terminal" }: RightSidebarProps) {
 			{isCollapsed && activeMode !== "none" && (
 				<div className="absolute top-4 right-12 rounded border border-primary bg-terminal px-2 py-1">
 					<span className="text-text-muted text-xs">
-						{activeMode === "terminal"
-							? "Terminal minimizado"
-							: "Crypto minimizado"}
+						{activeMode === "chat" ? "Chat minimizado" : "Crypto minimizado"}
 					</span>
 				</div>
 			)}

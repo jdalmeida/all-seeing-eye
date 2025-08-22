@@ -1,9 +1,9 @@
+import { evaluateAlertRules } from "@/lib/alerts/engine";
 import { db } from "@/server/db";
 import { insights, news } from "@/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { generateInsight } from "./ai";
 import { fetchNewsFromFeeds } from "./rss";
-import { evaluateAlertRules } from "@/lib/alerts/engine";
 
 export async function runNewsPipeline() {
 	try {

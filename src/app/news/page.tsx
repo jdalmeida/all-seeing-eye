@@ -1,5 +1,6 @@
 "use client";
 
+import { AIChat } from "@/app/_components/ai-chat";
 import { Navbar } from "@/app/_components/navbar";
 import { api } from "@/trpc/react";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
@@ -82,7 +83,10 @@ export default function NewsPage() {
 						<SignedOut>
 							<div className="mt-4">
 								<SignInButton mode="modal">
-									<button type="button" className="hover:glow-on-hover border border-primary bg-primary px-4 py-2 font-bold text-black transition-all hover:bg-primary-hover">
+									<button
+										type="button"
+										className="hover:glow-on-hover border border-primary bg-primary px-4 py-2 font-bold text-black transition-all hover:bg-primary-hover"
+									>
 										Fazer Login
 									</button>
 								</SignInButton>
@@ -109,10 +113,11 @@ export default function NewsPage() {
 					<div className="mb-4 flex items-center justify-between">
 						<div>
 							<h1 className="neon-glow mb-2 font-bold text-3xl text-neon">
-								[NEWS TERMINAL]
+								[AI CHAT - NOTÍCIAS]
 							</h1>
 							<p className="text-sm text-text-secondary">
-								&gt; Monitoramento de notícias em tempo real
+								&gt; Chat inteligente com histórico de conversas e system
+								prompts personalizáveis
 							</p>
 						</div>
 						<button
@@ -203,14 +208,20 @@ export default function NewsPage() {
 								{/* Insights */}
 								{item.insights.length > 0 ? (
 									<div className="space-y-2">
-										{item.insights.map((insight) => (
-											<div
-												key={insight.id}
-												className="rounded border-primary border-l-2 bg-black/10 p-2 text-sm text-text-secondary"
-											>
-												{insight.content}
-											</div>
-										))}
+										{item.insights.map(
+											(insight: {
+												id: number;
+												content: string;
+												createdAt: Date;
+											}) => (
+												<div
+													key={insight.id}
+													className="rounded border-primary border-l-2 bg-black/10 p-2 text-sm text-text-secondary"
+												>
+													{insight.content}
+												</div>
+											),
+										)}
 									</div>
 								) : (
 									<div className="text-text-muted text-xs italic">
@@ -231,6 +242,9 @@ export default function NewsPage() {
 					<div>&gt; Sistema atualizado automaticamente a cada 30 minutos</div>
 				</div>
 			</main>
+
+			{/* AI Chat Component */}
+			<AIChat />
 		</div>
 	);
 }

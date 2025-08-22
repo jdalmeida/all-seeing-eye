@@ -138,3 +138,79 @@ export const alertEvents = createTable(
 		}),
 	],
 );
+
+// Chat conversations table
+export const chatConversations = createTable(
+	"chat_conversation",
+	(d) => ({
+		id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+		userId: d.varchar({ length: 255 }).notNull(),
+		title: d.varchar({ length: 255 }).notNull(),
+		systemPrompt: d.text().notNull(),
+		createdAt: d
+			.timestamp({ withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+	}),
+	(t) => [
+		index("chat_conversation_user_id_idx").on(t.userId),
+		index("chat_conversation_created_at_idx").on(t.createdAt),
+		foreignKey({
+			columns: [t.userId],
+			foreignColumns: [users.id],
+			name: "chat_conversation_user_id_fk",
+		}),
+	],
+);
+
+// Chat messages table
+export const chatMessages = createTable(
+	"chat_message",
+	(d) => ({
+		id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+		conversationId: d.integer().notNull(),
+		role: d.varchar({ length: 20 }).notNull(),
+		content: d.text().notNull(),
+		createdAt: d
+			.timestamp({ withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+	}),
+	(t) => [
+		index("chat_message_conversation_id_idx").on(t.conversationId),
+		index("chat_message_created_at_idx").on(t.createdAt),
+		foreignKey({
+			columns: [t.conversationId],
+			foreignColumns: [chatConversations.id],
+			name: "chat_message_conversation_id_fk",
+		}),
+	],
+);
+
+// System prompts templates table
+export const systemPromptTemplates = createTable(
+	"system_prompt_template",
+	(d) => ({
+		id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+		userId: d.varchar({ length: 255 }).notNull(),
+		name: d.varchar({ length: 255 }).notNull(),
+		description: d.text(),
+		prompt: d.text().notNull(),
+		isDefault: d.boolean().notNull().default(false),
+		createdAt: d
+			.timestamp({ withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+	}),
+	(t) => [
+		index("system_prompt_template_user_id_idx").on(t.userId),
+		index("system_prompt_template_is_default_idx").on(t.isDefault),
+		foreignKey({
+			columns: [t.userId],
+			foreignColumns: [users.id],
+			name: "system_prompt_template_user_id_fk",
+		}),
+	],
+);

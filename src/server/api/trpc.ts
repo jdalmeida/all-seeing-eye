@@ -12,6 +12,8 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
+import { users } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 /**
  * 1. CONTEXT
@@ -103,6 +105,33 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 });
 
 /**
+ * Middleware to sync Clerk user with database
+ */
+const userSyncMiddleware = t.middleware(async ({ ctx, next }) => {
+	if (ctx.auth.userId) {
+		// Check if user exists in database
+		const existingUser = await ctx.db.query.users.findFirst({
+			where: eq(users.id, ctx.auth.userId),
+		});
+
+		if (!existingUser) {
+			// Create user in database if it doesn't exist
+			// This is a basic sync - you might want to add more user data from Clerk
+			await ctx.db
+				.insert(users)
+				.values({
+					id: ctx.auth.userId,
+					email: "", // Will be updated when user data is available
+					createdAt: new Date(),
+				})
+				.onConflictDoNothing(); // Prevents duplicate key errors
+		}
+	}
+
+	return next();
+});
+
+/**
  * Public (unauthenticated) procedure
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
@@ -119,6 +148,7 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  */
 export const protectedProcedure = t.procedure
 	.use(timingMiddleware)
+	.use(userSyncMiddleware) // Sync user with database
 	.use(({ ctx, next }) => {
 		if (!ctx.auth.userId) {
 			throw new TRPCError({ code: "UNAUTHORIZED" });

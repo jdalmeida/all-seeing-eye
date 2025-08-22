@@ -12,6 +12,9 @@ export const env = createEnv({
 			.enum(["development", "test", "production"])
 			.default("development"),
 		GOOGLE_AI_API_KEY: z.string().min(1),
+		AZURE_AI_ENDPOINT: z.string().url().optional(),
+		AZURE_AI_API_KEY: z.string().min(1).optional(),
+		AZURE_AI_DEPLOYMENT_NAME: z.string().min(1).optional(),
 	},
 
 	/**
@@ -31,6 +34,9 @@ export const env = createEnv({
 		DATABASE_URL: process.env.DATABASE_URL,
 		NODE_ENV: process.env.NODE_ENV,
 		GOOGLE_AI_API_KEY: process.env.GOOGLE_AI_API_KEY,
+		AZURE_AI_ENDPOINT: process.env.AZURE_AI_ENDPOINT,
+		AZURE_AI_API_KEY: process.env.AZURE_AI_API_KEY,
+		AZURE_AI_DEPLOYMENT_NAME: process.env.AZURE_AI_DEPLOYMENT_NAME,
 		// NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 	},
 	/**

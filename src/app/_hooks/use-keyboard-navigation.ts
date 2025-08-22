@@ -26,12 +26,12 @@ export function useKeyboardNavigation() {
 				router.push("/news");
 			}
 
-			// Ctrl+H - Ir para ajuda (página inicial com terminal expandido)
+			// Ctrl+H - Ir para ajuda (página inicial com chat expandido)
 			if (e.ctrlKey && e.key === "h") {
 				e.preventDefault();
 				router.push("/");
-				// Disparar evento para expandir terminal
-				window.dispatchEvent(new CustomEvent("expand-terminal"));
+				// Disparar evento para expandir chat
+				window.dispatchEvent(new CustomEvent("expand-chat"));
 			}
 
 			// F1 - Ajuda rápida
@@ -59,12 +59,13 @@ function showQuickHelp() {
 ┌─[ATALHOS DE TECLADO]─────────────────────────────┐
 │ Ctrl+G    - Página inicial                          │
 │ Ctrl+N    - Página de notícias                      │
-│ Ctrl+H    - Ajuda (terminal expandido)             │
-│ Ctrl+T    - Colapsar/expandir terminal             │
+│ Ctrl+H    - Ajuda (chat expandido)                 │
+│ Alt+T     - Alternar chat                           │
+│ Alt+C     - Alternar crypto monitor                │
+│ Alt+M     - Minimizar/Maximizar sidebar            │
+│ Alt+X     - Fechar sidebar                          │
 │ F1        - Esta ajuda                             │
 │ Escape    - Voltar                                 │
-│ Tab       - Auto-complete (no terminal)            │
-│ ↑↓        - Navegar histórico (no terminal)        │
 └─────────────────────────────────────────────────────┘
 `;
 
@@ -83,15 +84,19 @@ function showQuickHelp() {
 	}, 5000);
 }
 
-// Hook para escutar eventos customizados do terminal
-export function useTerminalEvents(onExpand?: () => void) {
+// Hook para escutar eventos customizados do chat
+export function useChatEvents(onExpand?: () => void) {
 	useEffect(() => {
-		const handleExpandTerminal = () => {
+		const handleExpandChat = () => {
 			onExpand?.();
 		};
 
-		window.addEventListener("expand-terminal", handleExpandTerminal);
-		return () =>
-			window.removeEventListener("expand-terminal", handleExpandTerminal);
+		window.addEventListener("expand-chat", handleExpandChat);
+		return () => window.removeEventListener("expand-chat", handleExpandChat);
 	}, [onExpand]);
+}
+
+// Alias para manter compatibilidade (deprecated)
+export function useTerminalEvents(onExpand?: () => void) {
+	return useChatEvents(onExpand);
 }

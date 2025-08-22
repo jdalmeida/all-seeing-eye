@@ -3,13 +3,117 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(env.GOOGLE_AI_API_KEY);
 
+// Interface para padronizar as respostas dos diferentes provedores
+interface AIResponse {
+	content: string;
+	provider: "gemini" | "azure";
+}
+
+// Função para gerar resposta usando Gemini
+async function generateWithGemini(prompt: string): Promise<AIResponse> {
+	try {
+		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+		const result = await model.generateContent(prompt);
+		const response = await result.response;
+		const content = response.text().trim();
+
+		if (!content) {
+			throw new Error("Failed to generate content with Gemini");
+		}
+
+		return { content, provider: "gemini" as const };
+	} catch (error) {
+		console.error("Error with Gemini:", error);
+		throw error;
+	}
+}
+
+// Função para gerar resposta usando Azure AI Foundry
+async function generateWithAzure(prompt: string): Promise<AIResponse> {
+	try {
+		if (
+			!env.AZURE_AI_ENDPOINT ||
+			!env.AZURE_AI_API_KEY ||
+			!env.AZURE_AI_DEPLOYMENT_NAME
+		) {
+			throw new Error("Azure AI configuration not available");
+		}
+
+		const response = await fetch(
+			`${env.AZURE_AI_ENDPOINT}/openai/deployments/${env.AZURE_AI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-02-15-preview`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"api-key": env.AZURE_AI_API_KEY,
+				},
+				body: JSON.stringify({
+					messages: [
+						{
+							role: "system",
+							content:
+								"Você é um assistente de IA especializado em análise de notícias e tecnologia. Responda sempre em português brasileiro.",
+						},
+						{
+							role: "user",
+							content: prompt,
+						},
+					],
+					max_tokens: 1000,
+					temperature: 0.7,
+					top_p: 0.95,
+					frequency_penalty: 0,
+					presence_penalty: 0,
+					stop: null,
+				}),
+			},
+		);
+
+		if (!response.ok) {
+			throw new Error(
+				`Azure AI request failed: ${response.status} ${response.statusText}`,
+			);
+		}
+
+		const data = await response.json();
+		const content = data.choices?.[0]?.message?.content?.trim();
+
+		if (!content) {
+			throw new Error("Failed to generate content with Azure AI");
+		}
+
+		return { content, provider: "azure" as const };
+	} catch (error) {
+		console.error("Error with Azure AI:", error);
+		throw error;
+	}
+}
+
+// Função principal com fallback
+async function generateWithFallback(prompt: string): Promise<AIResponse> {
+	try {
+		// Primeiro tenta com Gemini
+		return await generateWithGemini(prompt);
+	} catch (error) {
+		console.log("Gemini failed, trying Azure AI as fallback...");
+		try {
+			// Se Gemini falhar, tenta com Azure AI
+			return await generateWithAzure(prompt);
+		} catch (azureError) {
+			console.error("Both AI providers failed:", {
+				gemini: error,
+				azure: azureError,
+			});
+			throw new Error("Todos os provedores de IA falharam");
+		}
+	}
+}
+
 export async function generateInsight(
 	title: string,
 	link: string,
 ): Promise<string> {
 	try {
-		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
 		const prompt = `Resuma a seguinte notícia em português em até 3 frases, e explique por que ela é relevante para tecnologia, startups ou investimentos:
 
 Título: ${title}
@@ -17,15 +121,9 @@ Link: ${link}
 
 Resposta:`;
 
-		const result = await model.generateContent(prompt);
-		const response = await result.response;
-		const content = response.text().trim();
-
-		if (!content) {
-			throw new Error("Failed to generate insight");
-		}
-
-		return content;
+		const result = await generateWithFallback(prompt);
+		console.log(`Insight gerado usando: ${result.provider}`);
+		return result.content;
 	} catch (error) {
 		console.error("Error generating insight:", error);
 		return `Erro ao gerar insight para: ${title}. Tente novamente mais tarde.`;
@@ -45,8 +143,6 @@ export async function generateChatResponse(
 	},
 ): Promise<string> {
 	try {
-		const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
 		let systemPrompt = "";
 
 		if (context?.type === "news-modal" && context.news) {
@@ -114,15 +210,9 @@ Comando do usuário: ${message}`;
 Responda à seguinte mensagem de forma útil e informativa: ${message}`;
 		}
 
-		const result = await model.generateContent(systemPrompt);
-		const response = await result.response;
-		const content = response.text().trim();
-
-		if (!content) {
-			throw new Error("Failed to generate response");
-		}
-
-		return content;
+		const result = await generateWithFallback(systemPrompt);
+		console.log(`Resposta de chat gerada usando: ${result.provider}`);
+		return result.content;
 	} catch (error) {
 		console.error("Error generating chat response:", error);
 		return "Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.";

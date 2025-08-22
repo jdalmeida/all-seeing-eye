@@ -1,7 +1,8 @@
+import { alertsRouter } from "@/server/api/routers/alerts";
+import { chatRouter } from "@/server/api/routers/chat";
 import { insightRouter } from "@/server/api/routers/insights";
 import { newsRouter } from "@/server/api/routers/news";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
-import { alertsRouter } from "@/server/api/routers/alerts";
 
 /**
  * This is the primary router for your server.
@@ -11,7 +12,8 @@ import { alertsRouter } from "@/server/api/routers/alerts";
 export const appRouter = createTRPCRouter({
 	insight: insightRouter,
 	news: newsRouter,
-  	alerts: alertsRouter,
+	alerts: alertsRouter,
+	chat: chatRouter,
 });
 
 // export type definition of API
