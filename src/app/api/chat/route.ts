@@ -1,35 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { generateChatResponse } from '@/lib/ai';
-import { auth } from '@clerk/nextjs/server';
+import { generateChatResponse } from "@/lib/ai";
+import { auth } from "@clerk/nextjs/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  try {
-    // Verificar autenticação
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+	try {
+		// Verificar autenticação
+		const { userId } = await auth();
+		if (!userId) {
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		}
 
-    const { message, context } = await request.json();
+		const { message, context } = await request.json();
 
-    if (!message) {
-      return NextResponse.json(
-        { error: 'Message is required' },
-        { status: 400 }
-      );
-    }
+		if (!message) {
+			return NextResponse.json(
+				{ error: "Message is required" },
+				{ status: 400 },
+			);
+		}
 
-    const response = await generateChatResponse(message, context);
+		const response = await generateChatResponse(message, context);
 
-    return NextResponse.json({ response });
-  } catch (error) {
-    console.error('Error in chat API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json({ response });
+	} catch (error) {
+		console.error("Error in chat API:", error);
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500 },
+		);
+	}
 }

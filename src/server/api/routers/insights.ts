@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { insights } from "@/server/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export const insightRouter = createTRPCRouter({
 	// Get all insights for the authenticated user
@@ -37,29 +37,36 @@ export const insightRouter = createTRPCRouter({
 
 	// Create a new insight
 	create: protectedProcedure
-		.input(z.object({
-			title: z.string().min(1).max(500),
-			content: z.string().min(1),
-		}))
+		.input(
+			z.object({
+				title: z.string().min(1).max(500),
+				content: z.string().min(1),
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
 			const userId = ctx.auth.userId;
 
-			const newInsight = await ctx.db.insert(insights).values({
-				title: input.title,
-				content: input.content,
-				userId: userId,
-			}).returning();
+			const newInsight = await ctx.db
+				.insert(insights)
+				.values({
+					title: input.title,
+					content: input.content,
+					userId: userId,
+				})
+				.returning();
 
 			return newInsight[0];
 		}),
 
 	// Update an existing insight (only if it belongs to the user)
 	update: protectedProcedure
-		.input(z.object({
-			id: z.number(),
-			title: z.string().min(1).max(500),
-			content: z.string().min(1),
-		}))
+		.input(
+			z.object({
+				id: z.number(),
+				title: z.string().min(1).max(500),
+				content: z.string().min(1),
+			}),
+		)
 		.mutation(async ({ ctx, input }) => {
 			const userId = ctx.auth.userId;
 
@@ -71,7 +78,7 @@ export const insightRouter = createTRPCRouter({
 					updatedAt: new Date(),
 				})
 				.where((insights, { eq, and }) =>
-					and(eq(insights.id, input.id), eq(insights.userId, userId))
+					and(eq(insights.id, input.id), eq(insights.userId, userId)),
 				)
 				.returning();
 
@@ -91,7 +98,7 @@ export const insightRouter = createTRPCRouter({
 			const deletedInsight = await ctx.db
 				.delete(insights)
 				.where((insights, { eq, and }) =>
-					and(eq(insights.id, input.id), eq(insights.userId, userId))
+					and(eq(insights.id, input.id), eq(insights.userId, userId)),
 				)
 				.returning();
 

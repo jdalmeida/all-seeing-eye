@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { index, pgTableCreator, foreignKey } from "drizzle-orm/pg-core";
+import { foreignKey, index, pgTableCreator } from "drizzle-orm/pg-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -35,9 +35,7 @@ export const news = createTable(
 		title: d.text().notNull(),
 		link: d.text().notNull(),
 		source: d.varchar({ length: 255 }).notNull(),
-		publishedAt: d
-			.timestamp({ withTimezone: true })
-			.notNull(),
+		publishedAt: d.timestamp({ withTimezone: true }).notNull(),
 		createdAt: d
 			.timestamp({ withTimezone: true })
 			.default(sql`CURRENT_TIMESTAMP`)
@@ -46,7 +44,7 @@ export const news = createTable(
 	(t) => [
 		index("news_published_at_idx").on(t.publishedAt),
 		index("news_source_idx").on(t.source),
-	]
+	],
 );
 
 // Insights table (AI-generated insights for news)
@@ -70,12 +68,73 @@ export const insights = createTable(
 		foreignKey({
 			columns: [t.newsId],
 			foreignColumns: [news.id],
-			name: "insight_news_id_fk"
+			name: "insight_news_id_fk",
 		}),
 		foreignKey({
 			columns: [t.userId],
 			foreignColumns: [users.id],
-			name: "insight_user_id_fk"
+			name: "insight_user_id_fk",
+		}),
+	],
+);
+
+// Alert rules table
+export const alertRules = createTable(
+	"alert_rule",
+	(d) => ({
+		id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+		userId: d.varchar({ length: 255 }),
+		// Texto NL original da regra
+		ruleText: d.text().notNull(),
+		// Tipo da regra: 'crypto' | 'news' | etc
+		ruleType: d.varchar({ length: 32 }).notNull(),
+		// Parâmetros em JSON (schema específico por tipo)
+		params: d.json().notNull(),
+		active: d.boolean().notNull().default(true),
+		createdAt: d
+			.timestamp({ withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+		updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+	}),
+	(t) => [
+		index("alert_rule_user_id_idx").on(t.userId),
+		index("alert_rule_type_idx").on(t.ruleType),
+		index("alert_rule_active_idx").on(t.active),
+		foreignKey({
+			columns: [t.userId],
+			foreignColumns: [users.id],
+			name: "alert_rule_user_id_fk",
+		}),
+	],
+);
+
+// Alert events table (histórico de disparos)
+export const alertEvents = createTable(
+	"alert_event",
+	(d) => ({
+		id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+		ruleId: d.integer().notNull(),
+		newsId: d.varchar({ length: 255 }),
+		context: d.text(),
+		message: d.text().notNull(),
+		createdAt: d
+			.timestamp({ withTimezone: true })
+			.default(sql`CURRENT_TIMESTAMP`)
+			.notNull(),
+	}),
+	(t) => [
+		index("alert_event_rule_id_idx").on(t.ruleId),
+		index("alert_event_news_id_idx").on(t.newsId),
+		foreignKey({
+			columns: [t.ruleId],
+			foreignColumns: [alertRules.id],
+			name: "alert_event_rule_id_fk",
+		}),
+		foreignKey({
+			columns: [t.newsId],
+			foreignColumns: [news.id],
+			name: "alert_event_news_id_fk",
 		}),
 	],
 );

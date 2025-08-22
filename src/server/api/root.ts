@@ -1,6 +1,7 @@
 import { insightRouter } from "@/server/api/routers/insights";
 import { newsRouter } from "@/server/api/routers/news";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
+import { alertsRouter } from "@/server/api/routers/alerts";
 
 /**
  * This is the primary router for your server.
@@ -8,8 +9,9 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  insight: insightRouter,
-  news: newsRouter,
+	insight: insightRouter,
+	news: newsRouter,
+  	alerts: alertsRouter,
 });
 
 // export type definition of API

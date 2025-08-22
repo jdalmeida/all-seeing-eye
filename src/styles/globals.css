@@ -56,17 +56,24 @@
 
 	/* Neon glow effect */
 	.neon-glow {
-		text-shadow: 0 0 5px var(--color-green-400), 0 0 10px var(--color-green-400), 0 0 15px var(--color-green-400);
+		text-shadow: 0 0 5px var(--color-green-400), 0 0 10px var(--color-green-400),
+			0 0 15px var(--color-green-400);
 	}
 
 	/* Blinking cursor animation */
 	@keyframes blink {
-		0%, 50% { opacity: 1; }
-		51%, 100% { opacity: 0; }
+		0%,
+		50% {
+			opacity: 1;
+		}
+		51%,
+		100% {
+			opacity: 0;
+		}
 	}
 
 	.cursor-blink::after {
-		content: '|';
+		content: "|";
 		animation: blink 1s infinite;
 		color: var(--color-green-400);
 	}
@@ -89,6 +96,40 @@
 	.glow-on-hover:hover {
 		box-shadow: 0 0 20px var(--color-green-400);
 		transition: box-shadow 0.3s ease;
+	}
+
+	/* Recharts custom styles for terminal theme */
+	.recharts-cartesian-axis-line {
+		stroke: var(--color-gray-700) !important;
+	}
+
+	.recharts-cartesian-axis-tick-line {
+		stroke: var(--color-gray-700) !important;
+	}
+
+	.recharts-cartesian-axis-tick-value {
+		fill: var(--color-text-muted) !important;
+		font-family: var(--font-mono) !important;
+		font-size: 10px !important;
+	}
+
+	.recharts-tooltip-wrapper {
+		outline: none !important;
+	}
+
+	.recharts-default-tooltip {
+		background-color: var(--color-background) !important;
+		border: 1px solid var(--color-primary) !important;
+		border-radius: 4px !important;
+		font-family: var(--font-mono) !important;
+	}
+
+	.recharts-tooltip-label {
+		color: var(--color-text-primary) !important;
+	}
+
+	.recharts-tooltip-item {
+		color: var(--color-text-primary) !important;
 	}
 
 	/* Scan lines effect removed to prevent scroll issues */
