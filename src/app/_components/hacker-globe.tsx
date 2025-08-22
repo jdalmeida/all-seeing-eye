@@ -6,6 +6,7 @@ import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { type JSX, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 import { NewsInsightModal } from "./news-insight-modal";
+import { Eye, EyeIcon } from "lucide-react";
 
 interface NewsItem {
 	id: string;
@@ -289,6 +290,8 @@ export function HackerGlobeCanvas() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [rotationSpeed] = useState(0.005);
 	const [isPaused] = useState(false);
+	const [eyeBlink, setEyeBlink] = useState(false);
+	const [eyeOpen, setEyeOpen] = useState(true);
 
 	// Função para abrir modal com notícia selecionada
 	const handleNewsClick = (news: NewsItem) => {
@@ -301,6 +304,43 @@ export function HackerGlobeCanvas() {
 		setIsModalOpen(false);
 		setSelectedNews(null);
 	};
+
+	// Animação de piscar do olho
+	useEffect(() => {
+		const blinkInterval = setInterval(() => {
+			// Piscar rápido (simulando observação atenta)
+			setEyeBlink(true);
+			setTimeout(() => setEyeBlink(false), 150);
+		}, 3000 + Math.random() * 2000); // Intervalo variável entre 3-5 segundos
+
+		const longBlinkInterval = setInterval(() => {
+			// Piscar mais longo (simulando processamento)
+			setEyeBlink(true);
+			setTimeout(() => setEyeBlink(false), 300);
+		}, 8000 + Math.random() * 4000); // Intervalo variável entre 8-12 segundos
+
+		return () => {
+			clearInterval(blinkInterval);
+			clearInterval(longBlinkInterval);
+		};
+	}, []);
+
+	// Função para renderizar o olho com animação
+	const renderEye = () => {
+		if (eyeBlink) {
+			return (
+				<div className="flex h-40 items-center justify-center text-green-400/30 transition-all duration-150">
+					<div className="h-2 w-40 rounded-full bg-green-400/30" />
+				</div>
+			);
+		}
+		return (
+			<div className="text-green-400 transition-all duration-150">
+				<EyeIcon className="size-40 text-green-400" />
+			</div>
+		);
+	};
+
 	return (
 		<div className="relative h-full w-full overflow-hidden">
 			<Canvas
@@ -321,6 +361,17 @@ export function HackerGlobeCanvas() {
 					intensity={0.5}
 					color="#009926"
 				/>
+
+				<Float floatIntensity={0.5}>
+					<Html
+						position={[-1, 1.5, -50]}
+						rotation={[0, 0, 0]}
+						rotateY={20}
+						transform
+					>
+						{renderEye()}
+					</Html>
+				</Float>
 
 				<HackerGlobe
 					onNewsClick={handleNewsClick}
