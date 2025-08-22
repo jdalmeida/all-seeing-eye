@@ -160,7 +160,7 @@ export function AIChat({ isSidebar = false }: AIChatProps) {
 
 	// Auto-scroll para a última mensagem
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    useEffect(() => {
+	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [selectedConversationId]);
 
@@ -447,9 +447,9 @@ export function AIChat({ isSidebar = false }: AIChatProps) {
 										{conversation.title}
 									</div>
 									<div className="mt-1 text-text-secondary text-xs">
-										{new Date(conversation.updatedAt || new Date()).toLocaleDateString(
-											"pt-BR",
-										)}
+										{new Date(
+											conversation.updatedAt || new Date(),
+										).toLocaleDateString("pt-BR")}
 									</div>
 								</div>
 							))}
@@ -752,7 +752,9 @@ export function AIChat({ isSidebar = false }: AIChatProps) {
 										<div className="flex items-center gap-1">
 											<button
 												type="button"
-												onClick={() => setEditingTemplate(template as SystemPromptTemplate)}
+												onClick={() =>
+													setEditingTemplate(template as SystemPromptTemplate)
+												}
 												className="rounded p-1 transition-colors hover:bg-primary/20"
 												title="Editar"
 											>
@@ -778,7 +780,9 @@ export function AIChat({ isSidebar = false }: AIChatProps) {
 									</p>
 									<button
 										type="button"
-										onClick={() => handleUseTemplate(template as SystemPromptTemplate)}
+										onClick={() =>
+											handleUseTemplate(template as SystemPromptTemplate)
+										}
 										className="w-full rounded-md bg-primary/20 px-3 py-2 text-primary text-sm transition-colors hover:bg-primary/30"
 									>
 										Usar Template
